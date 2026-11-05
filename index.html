@@ -1,354 +1,825 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>g-uno.top · 在线工具与小作品 | UnlockMusic · GTA 6 倒计时</title>
-<meta name="description" content="g-uno.top 是一个轻量在线工具站：UnlockMusic 音乐解锁工具（本地解密、文件不上传）、GTA 6 全时区解锁倒计时（自动识别时区、14 个地区对照表），以及隐私与广告披露说明。">
-<meta name="keywords" content="g-uno.top, UnlockMusic, 音乐解锁, 在线工具, GTA 6 倒计时, GTA6 解锁时间, 全时区对照, 浏览器本地解密">
-<meta name="author" content="g-uno.top">
-<meta name="robots" content="index,follow">
-<link rel="canonical" href="https://g-uno.top/">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="g-uno.top">
-<meta property="og:title" content="g-uno.top · 在线工具与小作品">
-<meta property="og:description" content="UnlockMusic 音乐解锁工具 + GTA 6 全时区解锁倒计时。纯前端运行，无需注册，不上传文件。">
-<meta property="og:url" content="https://g-uno.top/">
-<meta property="og:locale" content="zh_CN">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="g-uno.top · 在线工具与小作品">
-<meta name="twitter:description" content="UnlockMusic 音乐解锁工具 + GTA 6 全时区解锁倒计时。">
-<meta name="theme-color" content="#08090d">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0d14'/%3E%3Cpath d='M22 42V24l20-5v18' stroke='%235ee6ff' stroke-width='4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='19' cy='42' r='5' fill='%23ff5ea8'/%3E%3Ccircle cx='39' cy='37' r='5' fill='%235ee6ff'/%3E%3C/svg%3E">
-<style>
-  :root{
-    --bg:#08090d;
-    --bg2:#0c0e15;
-    --panel:rgba(255,255,255,.035);
-    --panel-2:rgba(255,255,255,.06);
-    --line:rgba(255,255,255,.09);
-    --line-2:rgba(255,255,255,.16);
-    --text:#e9edf5;
-    --muted:#8d95a8;
-    --cyan:#5ee6ff;
-    --pink:#ff5ea8;
-    --amber:#ffc857;
-    --radius:18px;
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
-  body{
-    background:var(--bg);
-    color:var(--text);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",Roboto,Helvetica,Arial,sans-serif;
-    line-height:1.65;
-    -webkit-font-smoothing:antialiased;
-    min-height:100vh;
-    overflow-x:hidden;
-    position:relative;
-  }
-  .bg-grid{
-    position:fixed;inset:0;z-index:0;pointer-events:none;
-    background-image:linear-gradient(rgba(255,255,255,.028) 1px,transparent 1px),
-                     linear-gradient(90deg,rgba(255,255,255,.028) 1px,transparent 1px);
-    background-size:64px 64px;
-    mask-image:radial-gradient(ellipse 90% 60% at 50% 0%,#000 20%,transparent 78%);
-    -webkit-mask-image:radial-gradient(ellipse 90% 60% at 50% 0%,#000 20%,transparent 78%);
-  }
-  .orb{position:fixed;border-radius:50%;filter:blur(90px);opacity:.5;z-index:0;pointer-events:none}
-  .orb.a{width:520px;height:520px;top:-190px;left:-140px;background:radial-gradient(circle,rgba(94,230,255,.32),transparent 68%)}
-  .orb.b{width:460px;height:460px;top:-120px;right:-160px;background:radial-gradient(circle,rgba(255,94,168,.26),transparent 68%)}
-  .orb.c{width:600px;height:600px;bottom:-320px;left:38%;background:radial-gradient(circle,rgba(120,110,255,.22),transparent 70%)}
-  .wrap{position:relative;z-index:1;max-width:1060px;margin:0 auto;padding:0 22px}
-
-  /* ---------- top bar ---------- */
-  header.site{
-    display:flex;align-items:center;justify-content:space-between;gap:16px;
-    padding:22px 0 8px;
-  }
-  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
-  .brand svg{width:26px;height:26px;flex:none}
-  .brand b{font-size:16.5px;letter-spacing:.2px;font-weight:650}
-  .brand span{font-size:11px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase}
-  .topmail{
-    font-size:12.5px;color:var(--muted);text-decoration:none;
-    border:1px solid var(--line);border-radius:999px;padding:6px 13px;
-    transition:.2s;
-  }
-  .topmail:hover{color:var(--cyan);border-color:rgba(94,230,255,.45)}
-
-  /* ---------- hero ---------- */
-  .hero{padding:62px 0 40px;text-align:center}
-  .kicker{
-    display:inline-flex;align-items:center;gap:8px;
-    font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
-    border:1px solid var(--line);border-radius:999px;padding:6px 14px;margin-bottom:22px;
-    background:var(--panel);
-  }
-  .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
-  h1{
-    font-size:clamp(31px,5.6vw,50px);
-    line-height:1.16;letter-spacing:-1px;font-weight:750;
-    background:linear-gradient(96deg,#ffffff 8%,#c9f4ff 42%,#ffc2de 78%,#ffffff 100%);
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-  }
-  .hero p.lead{
-    max-width:600px;margin:20px auto 0;color:var(--muted);font-size:15.5px;
-  }
-
-  /* ---------- cards ---------- */
-  .grid{
-    display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
-    margin-top:52px;
-  }
-  .card{
-    position:relative;display:flex;flex-direction:column;
-    background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.022));
-    border:1px solid var(--line);border-radius:var(--radius);
-    padding:24px 22px 20px;text-decoration:none;color:inherit;
-    transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease;
-    overflow:hidden;
-  }
-  .card::after{
-    content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
-    background:radial-gradient(420px 160px at 50% -20%,rgba(94,230,255,.14),transparent 70%);
-    opacity:0;transition:opacity .22s ease;
-  }
-  .card:hover,.card:focus-visible{
-    transform:translateY(-4px);border-color:var(--line-2);
-    box-shadow:0 18px 42px -22px rgba(0,0,0,.85),0 0 0 1px rgba(94,230,255,.12);
-  }
-  .card:hover::after,.card:focus-visible::after{opacity:1}
-  .card:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
-  .ico{
-    width:42px;height:42px;border-radius:12px;display:grid;place-items:center;
-    border:1px solid var(--line);background:var(--panel-2);margin-bottom:16px;
-  }
-  .ico svg{width:21px;height:21px}
-  .c1 .ico svg{color:var(--cyan)}
-  .c2 .ico svg{color:var(--amber)}
-  .c3 .ico svg{color:var(--pink)}
-  .card h2{font-size:17.5px;font-weight:650;letter-spacing:-.2px;margin-bottom:3px}
-  .card .en{font-size:11.5px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:11px}
-  .card p{font-size:13.5px;color:#a7aec0;line-height:1.62;flex:1}
-  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
-  .tag{
-    font-size:11px;color:var(--muted);border:1px solid var(--line);
-    border-radius:6px;padding:2.5px 8px;background:rgba(255,255,255,.02);
-  }
-  .go{
-    display:inline-flex;align-items:center;gap:6px;margin-top:18px;
-    font-size:13px;color:var(--cyan);font-weight:600;
-  }
-  .go svg{width:14px;height:14px;transition:transform .22s ease}
-  .card:hover .go svg{transform:translateX(4px)}
-  .c2 .go{color:var(--amber)}
-  .c3 .go{color:var(--pink)}
-  .split{display:flex;gap:8px;margin-top:18px}
-  .split a{
-    flex:1;text-align:center;font-size:12.5px;font-weight:600;text-decoration:none;
-    border:1px solid var(--line);border-radius:9px;padding:7px 0;color:var(--text);
-    transition:.18s;background:rgba(255,255,255,.03);
-  }
-  .split a:hover{border-color:rgba(255,200,87,.5);color:var(--amber);background:rgba(255,200,87,.07)}
-
-  /* ---------- about ---------- */
-  .about{
-    margin-top:76px;padding:34px 0 8px;
-    border-top:1px solid var(--line);
-  }
-  .about h2{font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:22px}
-  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px 40px}
-  .about-grid h3{font-size:15px;margin-bottom:7px;font-weight:620}
-  .about-grid p{font-size:13.5px;color:var(--muted);line-height:1.72}
-
-  /* ---------- footer ---------- */
-  footer.site{
-    margin-top:64px;padding:26px 0 40px;border-top:1px solid var(--line);
-    display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;justify-content:space-between;
-    font-size:12px;color:#6f7789;
-  }
-  footer.site a{color:#8f98ab;text-decoration:none;border-bottom:1px solid transparent;transition:.18s}
-  footer.site a:hover{color:var(--cyan);border-bottom-color:rgba(94,230,255,.4)}
-  .fleft{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
-  .sep{color:#3a4152}
-  .adnote{max-width:520px;line-height:1.6;text-align:right}
-
-  @media (max-width:860px){
-    .grid{grid-template-columns:1fr;gap:13px}
-    .about-grid{grid-template-columns:1fr;gap:22px}
-    .hero{padding:44px 0 26px}
-    .adnote{text-align:left;max-width:none}
-    footer.site{flex-direction:column;align-items:flex-start}
-  }
-  @media (max-width:520px){
-    .wrap{padding:0 16px}
-    .topmail{display:none}
-    .card{padding:20px 18px 18px}
-    .hero{padding:34px 0 20px}
-  }
-  @media (prefers-reduced-motion:reduce){
-    *{transition:none!important;animation:none!important}
-    html{scroll-behavior:auto}
-  }
-</style>
-</head>
-<body>
-<div class="bg-grid"></div>
-<div class="orb a"></div>
-<div class="orb b"></div>
-<div class="orb c"></div>
-
-<div class="wrap">
-  <header class="site">
-    <a class="brand" href="/">
-      <svg viewBox="0 0 64 64" fill="none" aria-hidden="true">
-        <rect x="2" y="2" width="60" height="60" rx="14" stroke="rgba(94,230,255,.55)" stroke-width="2.5"/>
-        <path d="M24 44V26l17-4.4v17" stroke="#5ee6ff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="21" cy="44" r="4.4" fill="#ff5ea8"/>
-        <circle cx="38" cy="39" r="4.4" fill="#5ee6ff"/>
-      </svg>
-      <span>g-uno.top</span>
-      <span>Tools</span>
-    </a>
-    <a class="topmail" href="mailto:happygc913@gmail.com">happygc913@gmail.com</a>
-  </header>
-
-  <main>
-    <section class="hero">
-      <div class="kicker"><span class="dot"></span>轻量 · 纯前端 · 无需注册</div>
-      <h1>几个自己写的小工具<br>打开就能用</h1>
-      <p class="lead">所有工具都在浏览器里本地运行，不上传文件、不收集数据、不需要账号。这里只是入口。</p>
-    </section>
-
-    <section class="grid" aria-label="工具列表">
-      <a class="card c1" href="https://unlockmusic.g-uno.top/">
-        <div class="ico" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 18V6l10-2.4v12"/>
-            <circle cx="6.6" cy="18" r="2.6"/>
-            <circle cx="16.6" cy="15.6" r="2.6"/>
-          </svg>
-        </div>
-        <h2>UnlockMusic</h2>
-        <div class="en">Music Unlocker</div>
-        <p>把加密的音乐文件还原成可播放的通用格式。全程在浏览器本地解密，文件不会离开你的设备。</p>
-        <div class="tags"><span class="tag">本地解密</span><span class="tag">不上传</span><span class="tag">批量处理</span></div>
-        <span class="go">打开工具
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </span>
-      </a>
-
-      <div class="card c2">
-        <div class="ico" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="8.6"/>
-            <path d="M12 7.4V12l3.2 2"/>
-          </svg>
-        </div>
-        <h2>GTA 6 解锁倒计时</h2>
-        <div class="en">Global Unlock Countdown</div>
-        <p>2026 年 11 月 19 日发售，全球解锁横跨 18 小时。自动识别你的时区并倒数，附 14 个地区对照表与预载时间。</p>
-        <div class="tags"><span class="tag">自动识别时区</span><span class="tag">全时区对照</span><span class="tag">预载提醒</span></div>
-        <div class="split">
-          <a href="https://gta6count.g-uno.top/gta6-countdown">中文版</a>
-          <a href="https://gta6count.g-uno.top/">English</a>
-        </div>
-      </div>
-
-      <a class="card c3" href="https://gta6count.g-uno.top/privacy">
-        <div class="ico" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 3.2 19 6v5.6c0 4-2.9 7.4-7 8.9-4.1-1.5-7-4.9-7-8.9V6l7-2.8Z"/>
-            <path d="m9.2 11.8 2.1 2.1 3.7-3.9"/>
-          </svg>
-        </div>
-        <h2>隐私政策</h2>
-        <div class="en">Privacy &amp; Ads</div>
-        <p>本站使用 Google AdSense 展示广告，涉及第三方 Cookie。这里说明收集范围、退出方式与联系方式。</p>
-        <div class="tags"><span class="tag">Cookie 说明</span><span class="tag">广告披露</span><span class="tag">中英双语</span></div>
-        <span class="go">查看政策
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </span>
-      </a>
-    </section>
-
-    <section class="about">
-      <h2>关于本站</h2>
-      <div class="about-grid">
-        <div>
-          <h3>为什么做这些工具</h3>
-          <p>都是自己日常用得到、又找不到顺手版本的小功能。做完顺手放到网上，省得每次本地开一遍。没有商业模式，也不打算做注册登录。</p>
-        </div>
-        <div>
-          <h3>怎么运转的</h3>
-          <p>全部是静态页面，托管在 Cloudflare。文件解析、解密、时间换算都在你的浏览器里完成，服务器只负责把 HTML 和脚本送过去。</p>
-        </div>
-        <div>
-          <h3>广告与数据</h3>
-          <p>页面上的广告来自 Google AdSense，用于覆盖域名和带宽成本。工具本身不采集任何文件内容；Cookie 与个性化广告的关闭方式见隐私政策页。</p>
-        </div>
-        <div>
-          <h3>反馈与纠错</h3>
-          <p>发现算错的时间、解不开的格式，或者页面打不开，直接发邮件给我。能修的通常当天就改。</p>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site">
-    <div class="fleft">
-      <span>© 2026 g-uno.top</span>
-      <span class="sep">·</span>
-      <a href="mailto:happygc913@gmail.com">happygc913@gmail.com</a>
-      <span class="sep">·</span>
-      <a href="https://gta6count.g-uno.top/privacy">隐私政策</a>
-    </div>
-    <div class="adnote">
-      本站通过 Google AdSense 展示广告，Google 可能使用 Cookie 投放个性化广告。详见隐私政策页。
-    </div>
-  </footer>
-</div>
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "g-uno.top",
-  "alternateName": "g-uno 在线工具",
-  "url": "https://g-uno.top/",
-  "description": "轻量在线工具集合：UnlockMusic 音乐解锁工具与 GTA 6 全时区解锁倒计时。纯前端运行，无需注册。",
-  "inLanguage": "zh-CN",
-  "publisher": {
-    "@type": "Organization",
-    "name": "g-uno.top",
-    "email": "happygc913@gmail.com"
-  },
-  "mainEntity": {
-    "@type": "ItemList",
-    "name": "本站工具",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "UnlockMusic 音乐解锁工具",
-        "url": "https://unlockmusic.g-uno.top/"
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "GTA 6 全时区解锁倒计时",
-        "url": "https://gta6count.g-uno.top/"
-      },
-      {
-        "@type": "ListItem",
-        "position": 3,
-        "name": "隐私政策与广告披露",
-        "url": "https://gta6count.g-uno.top/privacy"
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      g-uno.top · 在线工具与小作品 | 今日油价 · UnlockMusic · GTA 6 倒计时
+    </title>
+    <meta
+      name="description"
+      content="g-uno.top 是一个轻量在线工具站：今日油价查询（全国 31 省市汽柴油限价、调价窗口提醒）、UnlockMusic 音乐解锁工具（本地解密、文件不上传）、GTA 6 全时区解锁倒计时，以及隐私与广告披露说明。"
+    />
+    <meta
+      name="keywords"
+      content="g-uno.top, 今日油价, 油价查询, 92号汽油价格, UnlockMusic, 音乐解锁, 在线工具, GTA 6 倒计时, GTA6 解锁时间, 全时区对照, 浏览器本地解密"
+    />
+    <meta name="author" content="g-uno.top" />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href="https://g-uno.top/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="g-uno.top" />
+    <meta property="og:title" content="g-uno.top · 在线工具与小作品" />
+    <meta
+      property="og:description"
+      content="今日油价查询、UnlockMusic 音乐解锁、GTA 6 全时区倒计时。纯前端运行，无需注册，不上传文件。"
+    />
+    <meta property="og:url" content="https://g-uno.top/" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="g-uno.top · 在线工具与小作品" />
+    <meta
+      name="twitter:description"
+      content="UnlockMusic 音乐解锁工具 + GTA 6 全时区解锁倒计时。"
+    />
+    <meta name="theme-color" content="#08090d" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0d14'/%3E%3Cpath d='M22 42V24l20-5v18' stroke='%235ee6ff' stroke-width='4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='19' cy='42' r='5' fill='%23ff5ea8'/%3E%3Ccircle cx='39' cy='37' r='5' fill='%235ee6ff'/%3E%3C/svg%3E"
+    />
+    <style>
+      :root {
+        --bg: #08090d;
+        --bg2: #0c0e15;
+        --panel: rgba(255, 255, 255, 0.035);
+        --panel-2: rgba(255, 255, 255, 0.06);
+        --line: rgba(255, 255, 255, 0.09);
+        --line-2: rgba(255, 255, 255, 0.16);
+        --text: #e9edf5;
+        --muted: #8d95a8;
+        --cyan: #5ee6ff;
+        --pink: #ff5ea8;
+        --amber: #ffc857;
+        --lime: #7ee787;
+        --radius: 18px;
       }
-    ]
-  }
-}
-</script>
-</body>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+          "Hiragino Sans GB", "Microsoft YaHei", Roboto, Helvetica, Arial,
+          sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+      }
+      .bg-grid {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+          linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.028) 1px,
+            transparent 1px
+          );
+        background-size: 64px 64px;
+        mask-image: radial-gradient(
+          ellipse 90% 60% at 50% 0%,
+          #000 20%,
+          transparent 78%
+        );
+        -webkit-mask-image: radial-gradient(
+          ellipse 90% 60% at 50% 0%,
+          #000 20%,
+          transparent 78%
+        );
+      }
+      .orb {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(90px);
+        opacity: 0.5;
+        z-index: 0;
+        pointer-events: none;
+      }
+      .orb.a {
+        width: 520px;
+        height: 520px;
+        top: -190px;
+        left: -140px;
+        background: radial-gradient(
+          circle,
+          rgba(94, 230, 255, 0.32),
+          transparent 68%
+        );
+      }
+      .orb.b {
+        width: 460px;
+        height: 460px;
+        top: -120px;
+        right: -160px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 94, 168, 0.26),
+          transparent 68%
+        );
+      }
+      .orb.c {
+        width: 600px;
+        height: 600px;
+        bottom: -320px;
+        left: 38%;
+        background: radial-gradient(
+          circle,
+          rgba(120, 110, 255, 0.22),
+          transparent 70%
+        );
+      }
+      .wrap {
+        position: relative;
+        z-index: 1;
+        max-width: 1060px;
+        margin: 0 auto;
+        padding: 0 22px;
+      }
+
+      /* ---------- top bar ---------- */
+      header.site {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 22px 0 8px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: var(--text);
+      }
+      .brand svg {
+        width: 26px;
+        height: 26px;
+        flex: none;
+      }
+      .brand b {
+        font-size: 16.5px;
+        letter-spacing: 0.2px;
+        font-weight: 650;
+      }
+      .brand span {
+        font-size: 11px;
+        color: var(--muted);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+      .topmail {
+        font-size: 12.5px;
+        color: var(--muted);
+        text-decoration: none;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 6px 13px;
+        transition: 0.2s;
+      }
+      .topmail:hover {
+        color: var(--cyan);
+        border-color: rgba(94, 230, 255, 0.45);
+      }
+
+      /* ---------- hero ---------- */
+      .hero {
+        padding: 62px 0 40px;
+        text-align: center;
+      }
+      .kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 11.5px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--muted);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 6px 14px;
+        margin-bottom: 22px;
+        background: var(--panel);
+      }
+      .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--cyan);
+        box-shadow: 0 0 10px var(--cyan);
+      }
+      h1 {
+        font-size: clamp(31px, 5.6vw, 50px);
+        line-height: 1.16;
+        letter-spacing: -1px;
+        font-weight: 750;
+        background: linear-gradient(
+          96deg,
+          #ffffff 8%,
+          #c9f4ff 42%,
+          #ffc2de 78%,
+          #ffffff 100%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .hero p.lead {
+        max-width: 600px;
+        margin: 20px auto 0;
+        color: var(--muted);
+        font-size: 15.5px;
+      }
+
+      /* ---------- cards ---------- */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        margin-top: 52px;
+      }
+      .card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.055),
+          rgba(255, 255, 255, 0.022)
+        );
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 24px 22px 20px;
+        text-decoration: none;
+        color: inherit;
+        transition:
+          transform 0.22s ease,
+          border-color 0.22s ease,
+          box-shadow 0.22s ease;
+        overflow: hidden;
+      }
+      .card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        pointer-events: none;
+        background: radial-gradient(
+          420px 160px at 50% -20%,
+          rgba(94, 230, 255, 0.14),
+          transparent 70%
+        );
+        opacity: 0;
+        transition: opacity 0.22s ease;
+      }
+      .card:hover,
+      .card:focus-visible {
+        transform: translateY(-4px);
+        border-color: var(--line-2);
+        box-shadow:
+          0 18px 42px -22px rgba(0, 0, 0, 0.85),
+          0 0 0 1px rgba(94, 230, 255, 0.12);
+      }
+      .card:hover::after,
+      .card:focus-visible::after {
+        opacity: 1;
+      }
+      .card:focus-visible {
+        outline: 2px solid var(--cyan);
+        outline-offset: 3px;
+      }
+      .ico {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--line);
+        background: var(--panel-2);
+        margin-bottom: 16px;
+      }
+      .ico svg {
+        width: 21px;
+        height: 21px;
+      }
+      .c1 .ico svg {
+        color: var(--cyan);
+      }
+      .c2 .ico svg {
+        color: var(--amber);
+      }
+      .c3 .ico svg {
+        color: var(--pink);
+      }
+      .c4 .ico svg {
+        color: var(--lime);
+      }
+      .card h2 {
+        font-size: 17.5px;
+        font-weight: 650;
+        letter-spacing: -0.2px;
+        margin-bottom: 3px;
+      }
+      .card .en {
+        font-size: 11.5px;
+        color: var(--muted);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        margin-bottom: 11px;
+      }
+      .card p {
+        font-size: 13.5px;
+        color: #a7aec0;
+        line-height: 1.62;
+        flex: 1;
+      }
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 14px;
+      }
+      .tag {
+        font-size: 11px;
+        color: var(--muted);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 2.5px 8px;
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .go {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 18px;
+        font-size: 13px;
+        color: var(--cyan);
+        font-weight: 600;
+      }
+      .go svg {
+        width: 14px;
+        height: 14px;
+        transition: transform 0.22s ease;
+      }
+      .card:hover .go svg {
+        transform: translateX(4px);
+      }
+      .c2 .go {
+        color: var(--amber);
+      }
+      .c3 .go {
+        color: var(--pink);
+      }
+      .c4 .go {
+        color: var(--lime);
+      }
+      .split {
+        display: flex;
+        gap: 8px;
+        margin-top: 18px;
+      }
+      .split a {
+        flex: 1;
+        text-align: center;
+        font-size: 12.5px;
+        font-weight: 600;
+        text-decoration: none;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        padding: 7px 0;
+        color: var(--text);
+        transition: 0.18s;
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .split a:hover {
+        border-color: rgba(255, 200, 87, 0.5);
+        color: var(--amber);
+        background: rgba(255, 200, 87, 0.07);
+      }
+
+      /* ---------- about ---------- */
+      .about {
+        margin-top: 76px;
+        padding: 34px 0 8px;
+        border-top: 1px solid var(--line);
+      }
+      .about h2 {
+        font-size: 14px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 600;
+        margin-bottom: 22px;
+      }
+      .about-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 26px 40px;
+      }
+      .about-grid h3 {
+        font-size: 15px;
+        margin-bottom: 7px;
+        font-weight: 620;
+      }
+      .about-grid p {
+        font-size: 13.5px;
+        color: var(--muted);
+        line-height: 1.72;
+      }
+
+      /* ---------- footer ---------- */
+      footer.site {
+        margin-top: 64px;
+        padding: 26px 0 40px;
+        border-top: 1px solid var(--line);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 18px;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 12px;
+        color: #6f7789;
+      }
+      footer.site a {
+        color: #8f98ab;
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+        transition: 0.18s;
+      }
+      footer.site a:hover {
+        color: var(--cyan);
+        border-bottom-color: rgba(94, 230, 255, 0.4);
+      }
+      .fleft {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 14px;
+        align-items: center;
+      }
+      .sep {
+        color: #3a4152;
+      }
+      .adnote {
+        max-width: 520px;
+        line-height: 1.6;
+        text-align: right;
+      }
+
+      @media (max-width: 860px) {
+        .grid {
+          grid-template-columns: 1fr;
+          gap: 13px;
+        }
+        .about-grid {
+          grid-template-columns: 1fr;
+          gap: 22px;
+        }
+        .hero {
+          padding: 44px 0 26px;
+        }
+        .adnote {
+          text-align: left;
+          max-width: none;
+        }
+        footer.site {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+      @media (max-width: 520px) {
+        .wrap {
+          padding: 0 16px;
+        }
+        .topmail {
+          display: none;
+        }
+        .card {
+          padding: 20px 18px 18px;
+        }
+        .hero {
+          padding: 34px 0 20px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          transition: none !important;
+          animation: none !important;
+        }
+        html {
+          scroll-behavior: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-grid"></div>
+    <div class="orb a"></div>
+    <div class="orb b"></div>
+    <div class="orb c"></div>
+
+    <div class="wrap">
+      <header class="site">
+        <a class="brand" href="/">
+          <svg viewBox="0 0 64 64" fill="none" aria-hidden="true">
+            <rect
+              x="2"
+              y="2"
+              width="60"
+              height="60"
+              rx="14"
+              stroke="rgba(94,230,255,.55)"
+              stroke-width="2.5"
+            />
+            <path
+              d="M24 44V26l17-4.4v17"
+              stroke="#5ee6ff"
+              stroke-width="3.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <circle cx="21" cy="44" r="4.4" fill="#ff5ea8" />
+            <circle cx="38" cy="39" r="4.4" fill="#5ee6ff" />
+          </svg>
+          <span>g-uno.top</span>
+          <span>Tools</span>
+        </a>
+        <a class="topmail" href="mailto:happygc913@gmail.com"
+          >happygc913@gmail.com</a
+        >
+      </header>
+
+      <main>
+        <section class="hero">
+          <div class="kicker">
+            <span class="dot"></span>轻量 · 纯前端 · 无需注册
+          </div>
+          <h1>几个自己写的小工具<br />打开就能用</h1>
+          <p class="lead">
+            所有工具都在浏览器里本地运行，不上传文件、不收集数据、不需要账号。这里只是入口。
+          </p>
+        </section>
+
+        <section class="grid" aria-label="工具列表">
+          <a class="card c1" href="https://unlockmusic.g-uno.top/">
+            <div class="ico" aria-hidden="true">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.9"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M9 18V6l10-2.4v12" />
+                <circle cx="6.6" cy="18" r="2.6" />
+                <circle cx="16.6" cy="15.6" r="2.6" />
+              </svg>
+            </div>
+            <h2>UnlockMusic</h2>
+            <div class="en">Music Unlocker</div>
+            <p>
+              把加密的音乐文件还原成可播放的通用格式。全程在浏览器本地解密，文件不会离开你的设备。
+            </p>
+            <div class="tags">
+              <span class="tag">本地解密</span><span class="tag">不上传</span
+              ><span class="tag">批量处理</span>
+            </div>
+            <span class="go"
+              >打开工具
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </span>
+          </a>
+
+          <a class="card c4" href="https://oilprice.g-uno.top/">
+            <div class="ico" aria-hidden="true">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.9"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M12 3.2S6.6 9.4 6.6 13.1a5.4 5.4 0 0 0 10.8 0C17.4 9.4 12 3.2 12 3.2Z"
+                />
+                <path d="M9.6 13.6a2.6 2.6 0 0 0 2.4 2.6" />
+              </svg>
+            </div>
+            <h2>今日油价</h2>
+            <div class="en">China Fuel Prices</div>
+            <p>
+              全国 31
+              省市汽油、柴油最新零售限价，自动定位你所在地区，附下次调价窗口倒计时和
+              2026 年全年调价走势，表格可排序。
+            </p>
+            <div class="tags">
+              <span class="tag">自动定位</span><span class="tag">调价提醒</span
+              ><span class="tag">历史走势</span>
+            </div>
+            <span class="go"
+              >查询油价
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </span>
+          </a>
+
+          <div class="card c2">
+            <div class="ico" aria-hidden="true">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.9"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="12" r="8.6" />
+                <path d="M12 7.4V12l3.2 2" />
+              </svg>
+            </div>
+            <h2>GTA 6 解锁倒计时</h2>
+            <div class="en">Global Unlock Countdown</div>
+            <p>
+              2026 年 11 月 19 日发售，全球解锁横跨 18
+              小时。自动识别你的时区并倒数，附 14 个地区对照表与预载时间。
+            </p>
+            <div class="tags">
+              <span class="tag">自动识别时区</span
+              ><span class="tag">全时区对照</span
+              ><span class="tag">预载提醒</span>
+            </div>
+            <div class="split">
+              <a href="https://gta6count.g-uno.top/gta6-countdown">中文版</a>
+              <a href="https://gta6count.g-uno.top/">English</a>
+            </div>
+          </div>
+
+          <a class="card c3" href="https://gta6count.g-uno.top/privacy">
+            <div class="ico" aria-hidden="true">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.9"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M12 3.2 19 6v5.6c0 4-2.9 7.4-7 8.9-4.1-1.5-7-4.9-7-8.9V6l7-2.8Z"
+                />
+                <path d="m9.2 11.8 2.1 2.1 3.7-3.9" />
+              </svg>
+            </div>
+            <h2>隐私政策</h2>
+            <div class="en">Privacy &amp; Ads</div>
+            <p>
+              本站使用 Google AdSense 展示广告，涉及第三方
+              Cookie。这里说明收集范围、退出方式与联系方式。
+            </p>
+            <div class="tags">
+              <span class="tag">Cookie 说明</span
+              ><span class="tag">广告披露</span
+              ><span class="tag">中英双语</span>
+            </div>
+            <span class="go"
+              >查看政策
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </span>
+          </a>
+        </section>
+
+        <section class="about">
+          <h2>关于本站</h2>
+          <div class="about-grid">
+            <div>
+              <h3>为什么做这些工具</h3>
+              <p>
+                都是自己日常用得到、又找不到顺手版本的小功能。做完顺手放到网上，省得每次本地开一遍。没有商业模式，也不打算做注册登录。
+              </p>
+            </div>
+            <div>
+              <h3>怎么运转的</h3>
+              <p>
+                全部是静态页面，托管在
+                Cloudflare。文件解析、解密、时间换算都在你的浏览器里完成，服务器只负责把
+                HTML 和脚本送过去。
+              </p>
+            </div>
+            <div>
+              <h3>广告与数据</h3>
+              <p>
+                页面上的广告来自 Google
+                AdSense，用于覆盖域名和带宽成本。工具本身不采集任何文件内容；Cookie
+                与个性化广告的关闭方式见隐私政策页。
+              </p>
+            </div>
+            <div>
+              <h3>反馈与纠错</h3>
+              <p>
+                发现算错的时间、解不开的格式，或者页面打不开，直接发邮件给我。能修的通常当天就改。
+              </p>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site">
+        <div class="fleft">
+          <span>© 2026 g-uno.top</span>
+          <span class="sep">·</span>
+          <a href="mailto:happygc913@gmail.com">happygc913@gmail.com</a>
+          <span class="sep">·</span>
+          <a href="https://gta6count.g-uno.top/privacy">隐私政策</a>
+        </div>
+        <div class="adnote">
+          本站通过 Google AdSense 展示广告，Google 可能使用 Cookie
+          投放个性化广告。详见隐私政策页。
+        </div>
+      </footer>
+    </div>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "g-uno.top",
+        "alternateName": "g-uno 在线工具",
+        "url": "https://g-uno.top/",
+        "description": "轻量在线工具集合：今日油价查询、UnlockMusic 音乐解锁工具与 GTA 6 全时区解锁倒计时。纯前端运行，无需注册。",
+        "inLanguage": "zh-CN",
+        "publisher": {
+          "@type": "Organization",
+          "name": "g-uno.top",
+          "email": "happygc913@gmail.com"
+        },
+        "mainEntity": {
+          "@type": "ItemList",
+          "name": "本站工具",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "今日油价查询",
+              "url": "https://oilprice.g-uno.top/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "UnlockMusic 音乐解锁工具",
+              "url": "https://unlockmusic.g-uno.top/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "GTA 6 全时区解锁倒计时",
+              "url": "https://gta6count.g-uno.top/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "隐私政策与广告披露",
+              "url": "https://gta6count.g-uno.top/privacy"
+            }
+          ]
+        }
+      }
+    </script>
+  </body>
 </html>
